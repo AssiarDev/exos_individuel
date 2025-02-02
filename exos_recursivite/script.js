@@ -44,15 +44,15 @@ const displayDirectory = (dossier) => {
 };
 
 // Etape 2, créer 2 fonctions, une itératif et une recursive
-const displayDirectoryIterative = () => {
+const displayDirectoryIterative = (dossier) => {
     displayDirectory(dossierPrincipal)
-    const directory = dossierPrincipal.contenu
-    for(let i = 0; i < directory.length; i++){
-        console.log(directory[i].nom);
+    //const directory = dossier.contenu
+    for(let i = 0; i < dossier.contenu.length; i++){
+        console.log(dossier.contenu[i].nom);
     };
 };
 
-//displayDirectoryIterative();
+//displayDirectoryIterative(dossierPrincipal);
 
 // fonction recursive
 const displayDirectoryRecursive = (dossier) => {
