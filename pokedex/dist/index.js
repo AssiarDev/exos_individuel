@@ -1,24 +1,53 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-const url = ' https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/pokedex.json';
-const fetchingData = () => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield fetch(url);
-    if (!response.ok) {
-        throw new Error('Erreur lors du fetch');
+;
+;
+;
+const url = "https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/pokedex.json";
+class App {
+    constructor(pokemons = [], weightPokemon = []) {
+        this.pokemons = pokemons;
+        this.weightPokemon = weightPokemon;
+    }
+    async fetch() {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Erreur lors du fetch");
+        }
+        ;
+        const result = await response.json();
+        this.pokemons = result.pokemon;
     }
     ;
-    const result = yield response.json();
-    const pokemon = result.pokemon;
-    console.log('result: ', result);
-    console.log('pokemon: ', pokemon);
-    return pokemon;
+    countPokemon() {
+        console.log(`Il y a ${this.pokemons.length} pokemons.`);
+    }
+    ;
+    pkmnWeightMoreThan10kgs() {
+        this.pokemons.forEach(pkmn => {
+            const weight = parseFloat(pkmn.weight.replace('kg', ''));
+            if (weight > 10) {
+                this.weightPokemon.push(pkmn);
+            }
+            ;
+        });
+        console.log(`Il y a ${this.weightPokemon.length} pokemons qui pèsent plus de 10kg.`);
+    }
+    sortPokemon() {
+        const sortAscending = this.weightPokemon;
+        sortAscending.sort((a, b) => {
+            const weightA = parseFloat(a.weight.replace('kg', ''));
+            const weightB = parseFloat(b.weight.replace('kg', ''));
+            return weightA - weightB;
+        });
+        console.log(sortAscending);
+    }
+}
+;
+const app = new App();
+app.fetch().then(() => {
+    app.countPokemon();
+    app.pkmnWeightMoreThan10kgs();
+    app.sortPokemon();
+}).catch(error => {
+    console.error(error);
 });
-fetchingData();

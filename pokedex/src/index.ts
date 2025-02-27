@@ -1,9 +1,9 @@
-interface Pokemon {
-    id: number,
-    num: string,
-    name: string,
-    img: string,
-    type: string[],
+interface KeyData {
+    id: number;
+    num: string;
+    name: string;
+    img: string;
+    type: string[];
     height: string;
     weight: string;
     candy: string;
@@ -16,33 +16,68 @@ interface Pokemon {
     weaknesses: string[];
     next_evolution?: Evolution[];
     prev_evolution?: Evolution[];
-
-}
-
+  };
+  
 interface Evolution {
-    num: string,
-    name: string
-}
-
+    num: string;
+    name: string;
+  };
+  
 interface Pokedex {
-    pokemon: Pokemon[]
-}
+    pokemon: KeyData[];
+  };
 
-const url: string = ' https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/pokedex.json';
+const url: string = "https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/pokedex.json";
 
-const fetchingData = async (): Promise<Pokemon[]> => {
+class App {
+  constructor(
+    public pokemons: KeyData[] = [],
+    public weightPokemon: KeyData[] = []
+  ) {}
+
+  async fetch(): Promise<void> {
     const response = await fetch(url);
 
-    if(!response.ok){
-        throw new Error('Erreur lors du fetch')
+    if (!response.ok) {
+      throw new Error("Erreur lors du fetch");
     };
 
     const result: Pokedex = await response.json();
-    const pokemon: Pokemon[] = result.pokemon
-    console.log('result: ', result)
-    console.log('pokemon: ', pokemon)
+    this.pokemons = result.pokemon;
+  };
 
-    return pokemon;
+countPokemon(): void{
+    console.log(`Il y a ${this.pokemons.length} pokemons.`);
 };
 
-fetchingData();
+pkmnWeightMoreThan10kgs(): void{
+    this.pokemons.forEach(pkmn => {
+        const weight = parseFloat(pkmn.weight.replace('kg', ''));
+        if(weight > 10){
+            this.weightPokemon.push(pkmn)
+        };
+    });
+    console.log(`Il y a ${this.weightPokemon.length} pokemons qui pèsent plus de 10kg.`)
+}
+
+
+sortPokemon(): void{
+    const sortAscending = this.weightPokemon;
+    sortAscending.sort((a, b) => {
+        const weightA = parseFloat(a.weight.replace('kg', ''));
+        const weightB = parseFloat(b.weight.replace('kg', ''));
+        return weightA - weightB;
+    });
+    console.log(sortAscending)
+}
+};
+
+const app = new App();
+
+app.fetch().then(() => {
+    app.countPokemon();
+    app.pkmnWeightMoreThan10kgs();
+    app.sortPokemon();
+}).catch(error => {
+    console.error(error);
+});
