@@ -1,4 +1,6 @@
-const express = require('express');
+import express from 'express';
+import bubble  from './bubble.js';
+
 const app = express(); 
 const port = 3001; 
 
@@ -6,9 +8,10 @@ app.use(express.json());
 
 app.post('/', (req, res) => {
     const {sort_order, values} = req.body;
+    const bubbleValues = bubble(values);
     res.json({
         sort_order,
-        values
+        bubbleValues
     })
 
 })
